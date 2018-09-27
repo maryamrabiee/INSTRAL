@@ -58,7 +58,7 @@ import com.martiansoftware.jsap.stringparsers.FileStringParser;
 //import com.sun.xml.internal.xsom.impl.util.SchemaTreeTraverser;
 
 public class CommandLine {
-	protected static String _version = "5.13.0";
+	protected static String _version = "5.13.1";
 
 	protected static SimpleJSAP jsap;
 
@@ -1236,7 +1236,7 @@ public class CommandLine {
 					///****************
 					List<String> gtLeaves = new ArrayList<String>(Arrays.asList(gt.getLeaves()));
 					gtLeaves.removeAll(stLeaves);
-					if( gtLeaves.size() > 1){
+					if( gtLeaves.size() >= 1){
 						gt.constrainByLeaves(stLeaves);
 //						System.err.println("pruned1");
 					}
@@ -1259,7 +1259,7 @@ public class CommandLine {
 //					}
 					List<String> trLeaves = new ArrayList<String>(Arrays.asList(tr.getLeaves()));
 					trLeaves.removeAll(stLeaves);
-					if(trLeaves.size() > 1){
+					if(trLeaves.size() >= 1){
 						tr.constrainByLeaves(stLeaves);
 //						System.err.println("pruned2");
 					}
