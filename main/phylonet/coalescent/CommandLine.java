@@ -940,8 +940,8 @@ public class CommandLine {
 				+ Polytree.time / 1000000000.0D + " secs");
 
 		Tree st = processSolution(outbuffer, bootstraps, outgroup, inferenceConsumer, solutions);
-		TNode node = st.getNode(inferenceConsumer.getNewSpecies()).getParent();
-		System.err.println("new species: "+((STINode) node).getData());
+//		TNode node = st.getNode(inferenceConsumer.getNewSpecies()).getParent();
+//		System.err.println("new species: "+((STINode) node).getData());
 		return st;
 	}
 
