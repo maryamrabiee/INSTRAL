@@ -58,7 +58,7 @@ import com.martiansoftware.jsap.stringparsers.FileStringParser;
 //import com.sun.xml.internal.xsom.impl.util.SchemaTreeTraverser;
 
 public class CommandLine {
-	protected static String _version = "5.13.1";
+	protected static String _version = "5.13.2";
 
 	protected static SimpleJSAP jsap;
 
@@ -306,7 +306,7 @@ public class CommandLine {
 
 	static Options readOptions(int criterion, boolean rooted,
 			boolean extrarooted, double wh, JSAPResult config,
-			List<Tree> mainTrees, List<List<String>> bootstrapInputSets, List<Tree> extraTrees)
+			List<Tree> mainTrees, List<List<String>> bootstrapInputSets, List<Tree> extraTrees, long startTime)
 			throws JSAPException, IOException {
 
 		Map<String, String> taxonMap = null;
@@ -525,6 +525,8 @@ public class CommandLine {
 			}
 			System.err.println(mainTrees.size() + " trees read from "
 					+ config.getFile("input file"));
+			System.err.println("Reading trees finished in "+ (System.currentTimeMillis() - startTime) / 1000.0D + " secs");
+			System.err.println("Memory"+ Runtime.getRuntime().totalMemory()/1000000+"MB");
 
 			GlobalMaps.taxonIdentifier.lock();
 
@@ -728,7 +730,7 @@ public class CommandLine {
 		List<Tree> extraTrees = new ArrayList<Tree>();
 		readExtraTrees(config, extrarooted, extraTrees);
 		Options options = readOptions(criterion, rooted, extrarooted, wh,
-				config, mainTrees, bootstrapInputSets, extraTrees);
+				config, mainTrees, bootstrapInputSets, extraTrees, startTime);
 		boolean stLabel = config.contains("extra species trees") ? true: false;
 
 		readExtraInputTrees2(extraTrees, extrarooted, stLabel);
@@ -1195,7 +1197,8 @@ public class CommandLine {
 			throws FileNotFoundException, IOException {
 
 //		ArrayList<String> retainedTaxa = new ArrayList<String>();
-		List<String> stLeaves = new ArrayList<String>(Arrays.asList(extraSpTtrees.get(0).getLeaves()));
+	//	List<String> stLeaves = new ArrayList<String>(Arrays.asList(extraSpTtrees.get(0).getLeaves()));
+		Set<String> stLeaves = new HashSet<String>(Arrays.asList(extraSpTtrees.get(0).getLeaves()));
 		stLeaves.add(newSpeciesName);	
 //		List<String> gtLeaves;
 		
@@ -1234,13 +1237,14 @@ public class CommandLine {
 //						stLeaves.add(newSpeciesName);							
 //					}
 					///****************
-					List<String> gtLeaves = new ArrayList<String>(Arrays.asList(gt.getLeaves()));
+//					List<String> gtLeaves = new ArrayList<String>(Arrays.asList(gt.getLeaves()));
+					Set<String> gtLeaves = new HashSet<String>(Arrays.asList(gt.getLeaves()));
 					gtLeaves.removeAll(stLeaves);
 					if( gtLeaves.size() >= 1){
 						gt.constrainByLeaves(stLeaves);
 //						System.err.println("pruned1");
 					}
-
+					System.err.println( Runtime.getRuntime().totalMemory());
 					
 					if (minleaves == null || gt.getLeafCount() >= minleaves) {
 						
@@ -1257,7 +1261,9 @@ public class CommandLine {
 //						newSpeciesName = gtLeaves.get(0);
 //						stLeaves.add(newSpeciesName);							
 //					}
-					List<String> trLeaves = new ArrayList<String>(Arrays.asList(tr.getLeaves()));
+					//List<String> trLeaves = new ArrayList<String>(Arrays.asList(tr.getLeaves()));
+					Set<String> trLeaves = new HashSet<String>(Arrays.asList(tr.getLeaves()));
+					
 					trLeaves.removeAll(stLeaves);
 					if(trLeaves.size() >= 1){
 						tr.constrainByLeaves(stLeaves);

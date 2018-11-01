@@ -1,4 +1,6 @@
-- version 5.13.6:
+- version 5.13.2:
+    - extended logging and change in reading trees which results in decrease in running time
+- version 5.13.0:
     - Placement option (starting a new repository)
 - version 5.12.6:
     - Placement added as an option for which you should give the name of new species in the gene trees

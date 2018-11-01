@@ -285,7 +285,7 @@ public class Polytree {
 		}
 		catch (Throwable e) {
 			useNativeMethod = false;
-			//e.printStackTrace(); 
+			e.printStackTrace(); 
 			System.err.println("Fail to load native library "+System.mapLibraryName("Astral")+"; use Java default computing method.");
 		}
 		
