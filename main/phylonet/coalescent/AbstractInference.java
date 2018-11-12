@@ -187,6 +187,8 @@ public abstract class AbstractInference<T> implements Cloneable{
 		Logging.logTimeMessage("AbstractInference 193: " );
 		
 		System.err.println("Total Number of elements: " + countWeights());
+		System.err.println("Memory used: "+ Runtime.getRuntime().totalMemory()/1000000+" MB");
+		
 
 		List<STITreeCluster> minClusters = new LinkedList<STITreeCluster>();
 		List<Double> coals = new LinkedList<Double>();

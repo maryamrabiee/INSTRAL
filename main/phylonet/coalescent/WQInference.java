@@ -162,6 +162,7 @@ public class WQInference extends AbstractInference<Tripartition> {
 			//ASTRAL IV SPECIFIC
 			this.maxpossible = this.calculateMaxPossible();
 			System.err.println("Number of quartet trees in the gene trees: "+this.maxpossible);
+			System.err.println("Memory used: "+ Runtime.getRuntime().totalMemory()/1000000+" MB");
 
 			//System.err.println(this.maxpossible);
 		}

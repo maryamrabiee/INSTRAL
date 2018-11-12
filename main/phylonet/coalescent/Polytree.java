@@ -277,6 +277,7 @@ public class Polytree {
 		maxScore = computeUpperbound(c.getBitSet());
 		System.err.println("Polytree max score: " + maxScore / 4);
 		System.err.println("Polytree building time: " + (System.currentTimeMillis() - t) / 1000.0D + " seconds.");
+		System.err.println("Memory used : "+ Runtime.getRuntime().totalMemory()/1000000+" MB");
 		
 		try {
 			System.loadLibrary("Astral");
