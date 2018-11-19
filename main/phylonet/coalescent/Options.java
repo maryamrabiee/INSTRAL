@@ -24,6 +24,7 @@ public class Options {
 	private double CD;
 	private Integer minLeaves;
 	private Integer geneRepeat;
+	private boolean scoreTree;
 	
 	private boolean ustarDist;
 
@@ -31,7 +32,7 @@ public class Options {
 			boolean exactSolution, boolean duploss, int alg, int addExtra,
 			boolean outputCompletedGenes, boolean outSearch, boolean run,
 			int branchannotation, double lambda, String outputFile, int samplingrounds, int polylimit,
-			String freqOutputPath, Integer minimumLeaves, Integer geneRepeat, boolean useInnerNodeDist, String placement) {
+			String freqOutputPath, Integer minimumLeaves, Integer geneRepeat, boolean useInnerNodeDist, String placement, boolean scoreTree) {
 		this.rooted = rooted;
 		this.extrarooted = extrarooted;
 		this.exactSolution = exactSolution;
@@ -51,6 +52,7 @@ public class Options {
 		this.setGeneRepeat(geneRepeat);
 		this.setUstarDist(useInnerNodeDist);
 		this.placement = placement;
+		this.scoreTree = scoreTree;
 	}
 
 	public boolean isRooted() {
@@ -233,5 +235,13 @@ public class Options {
 
 	public String getPlacementStr() {
 		return placement;
+	}
+
+	public boolean isScoreTree() {
+		return scoreTree;
+	}
+
+	public void setScoreTree(boolean scoreTree) {
+		this.scoreTree = scoreTree;
 	}
 }

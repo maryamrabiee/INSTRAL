@@ -58,7 +58,7 @@ import com.martiansoftware.jsap.stringparsers.FileStringParser;
 //import com.sun.xml.internal.xsom.impl.util.SchemaTreeTraverser;
 
 public class CommandLine {
-	protected static String _version = "5.13.3";
+	protected static String _version = "5.13.4";
 
 	protected static SimpleJSAP jsap;
 
@@ -99,6 +99,9 @@ public class CommandLine {
 	
 						new Switch("cpu only", 'C', "cpu-only", 
 								"Do not use GPUs."),
+						
+						new Switch("no scoring", JSAP.NO_SHORTFLAG , "no-scoring", 
+								"Do not score final species tree."),
 
 						new FlaggedOption("cpu threads", JSAP.INTEGER_PARSER,
 								"-1", JSAP.NOT_REQUIRED, 'T', "cpu-threads",
@@ -663,7 +666,8 @@ public class CommandLine {
 				polylimit == null ? -1 : polylimit, freqPath, minleaves,
 				config.getInt("gene repetition"),
 				config.getBoolean("internode-dist"),
-				placementStr);
+				placementStr,
+				config.getBoolean("no scoring"));
 		options.setDLbdWeigth(wh);
 		options.setCS(1d);
 		options.setCD(1d);
@@ -970,9 +974,9 @@ public class CommandLine {
 		// TODO: MULTIND.
 		GlobalMaps.taxonNameMap.getSpeciesIdMapper().stToGt((MutableTree) st);
 
-		
-		inference.scoreSpeciesTreeWithGTLabels(st, false);
-
+		if(!inference.options.isScoreTree()){
+			inference.scoreSpeciesTreeWithGTLabels(st, false);
+		}
 		GlobalMaps.taxonNameMap.getSpeciesIdMapper().gtToSt((MutableTree) st);
 
 		if ((bootstraps != null) && (bootstraps.iterator().hasNext())) {
