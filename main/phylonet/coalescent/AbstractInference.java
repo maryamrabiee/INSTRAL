@@ -244,7 +244,7 @@ public abstract class AbstractInference<T> implements Cloneable{
 			}
 			sol._st = tr;
 		} else {
-			sol._st = Utils.buildTreeFromClusters(minClusters, spm.getSTTaxonIdentifier(), false);
+			sol._st = Utils.buildTreeFromClusters2(minClusters, spm.getSTTaxonIdentifier(), false, extraTrees.get(0), newSpecies);
 		}
 
 		/* HashMap<TNode,BitSet> map = new HashMap<TNode,BitSet>();

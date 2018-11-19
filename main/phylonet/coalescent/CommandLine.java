@@ -58,7 +58,7 @@ import com.martiansoftware.jsap.stringparsers.FileStringParser;
 //import com.sun.xml.internal.xsom.impl.util.SchemaTreeTraverser;
 
 public class CommandLine {
-	protected static String _version = "5.13.2";
+	protected static String _version = "5.13.3";
 
 	protected static SimpleJSAP jsap;
 
@@ -512,14 +512,14 @@ public class CommandLine {
 			// System.err.println("Main input file: "+config.getFile("input file"));
 			if(config.contains("placement")){
 				readAndPruneInputTrees(mainTrees,
-					readTreeFileAsString(config.getFile("input file")), rooted,
+					readTreeFileAsString(config.getFile("input file"),false), rooted,
 					true, false, minleaves,
 					config.getInt("branch annotation level"), null, config.contains("placement"), extraTrees, placementStr);
 			}
 			
 			else{
 				readInputTrees(mainTrees,
-						readTreeFileAsString(config.getFile("input file")), rooted,
+						readTreeFileAsString(config.getFile("input file"),false), rooted,
 						true, false, minleaves,
 						config.getInt("branch annotation level"), null);
 			}
@@ -579,7 +579,7 @@ public class CommandLine {
 				BufferedReader rebuff = new BufferedReader(new FileReader(
 						config.getFile("bootstraps")));
 				while ((line = rebuff.readLine()) != null) {
-					List<String> g = readTreeFileAsString(new File(line));
+					List<String> g = readTreeFileAsString(new File(line),false);
 					Collections.shuffle(g, GlobalMaps.random);
 					bstrees.add(g);
 				}
@@ -751,7 +751,7 @@ public class CommandLine {
 			System.err.println("Scoring "
 					+ config.getFile("score species trees"));
 			toScore = readTreeFileAsString(config
-					.getFile("score species trees"));
+					.getFile("score species trees"),false);
 			runScore(criterion, rooted, mainTrees, outbuffer, options,
 					outgroup, toScore);
 		} else {
@@ -822,7 +822,7 @@ public class CommandLine {
 
 			if (config.getFile("extra trees") != null) {
 				readExtraInputTrees(extraTrees,
-						readTreeFileAsString(config.getFile("extra trees")),
+						readTreeFileAsString(config.getFile("extra trees"),true),
 						extrarooted, true, false, null, 1, null);
 				System.err.println(extraTrees.size()
 						+ " extra trees read from "
@@ -832,7 +832,7 @@ public class CommandLine {
 			if (config.getFile("extra species trees") != null) {
 				readExtraInputTrees(extraTrees,
 						readTreeFileAsString(config
-								.getFile("extra species trees")), extrarooted,
+								.getFile("extra species trees"),true), extrarooted,
 						true, true, null, 1, null);
 				System.err.println(extraTrees.size()
 						+ " extra trees read from "
@@ -970,6 +970,7 @@ public class CommandLine {
 		// TODO: MULTIND.
 		GlobalMaps.taxonNameMap.getSpeciesIdMapper().stToGt((MutableTree) st);
 
+		
 		inference.scoreSpeciesTreeWithGTLabels(st, false);
 
 		GlobalMaps.taxonNameMap.getSpeciesIdMapper().gtToSt((MutableTree) st);
@@ -998,7 +999,7 @@ public class CommandLine {
 		return inference;
 	}
 
-	private static List<String> readTreeFileAsString(File file)
+	private static List<String> readTreeFileAsString(File file, boolean escape)
 			throws FileNotFoundException, IOException {
 		String line;
 		List<String> trees = new ArrayList<String>();
@@ -1006,7 +1007,8 @@ public class CommandLine {
 				file));
 		while ((line = treeBufferReader.readLine()) != null) {
 			if (line.length() > 0) {
-				line = line.replaceAll("\\)[^,);]*", ")");
+				if(!escape)
+					line = line.replaceAll("\\)[^,);]*", ")");
 				trees.add(line);
 			}
 		}
@@ -1067,6 +1069,7 @@ public class CommandLine {
 						tr.rerootTreeAtNode(tr.getNode(outgroup));
 						Trees.removeBinaryNodes(tr);
 					}
+					System.err.println(tr);
 					if (stLablel) {
 						GlobalMaps.taxonNameMap.getSpeciesIdMapper().stToGt(tr);
 					}
@@ -1120,6 +1123,7 @@ public class CommandLine {
 				if (rooted) {
 					STITree<Double> gt = new STITree<Double>(true);
 					nr.readTree(gt);
+					System.err.println(gt);
 					if (checkCompleteness) {
 						if (previousTreeTaxa.isEmpty()) {
 							previousTreeTaxa.addAll(Arrays.asList(gt
@@ -1142,6 +1146,7 @@ public class CommandLine {
 				} else {
 					// System.err.println(".");
 					MutableTree tr = nr.readTree();
+					System.err.println(tr);
 					if (minleaves == null || tr.getLeafCount() >= minleaves) {
 						trees.add(tr);
 					} else {
@@ -1236,9 +1241,11 @@ public class CommandLine {
 //						newSpeciesName = gtLeaves.get(0);
 //						stLeaves.add(newSpeciesName);							
 //					}
-					///****************
 //					List<String> gtLeaves = new ArrayList<String>(Arrays.asList(gt.getLeaves()));
 					Set<String> gtLeaves = new HashSet<String>(Arrays.asList(gt.getLeaves()));
+					boolean tokeep = true;
+					if(!gtLeaves.contains(newSpeciesName))
+						tokeep = false;
 					gtLeaves.removeAll(stLeaves);
 					if( gtLeaves.size() >= 1){
 						gt.constrainByLeaves(stLeaves);
@@ -1246,7 +1253,7 @@ public class CommandLine {
 					}
 					System.err.println( Runtime.getRuntime().totalMemory());
 					
-					if (minleaves == null || gt.getLeafCount() >= minleaves) {
+					if ((minleaves == null || gt.getLeafCount() >= minleaves) && tokeep ) {
 						
 						trees.add(gt);
 					} else {
@@ -1263,6 +1270,9 @@ public class CommandLine {
 //					}
 					//List<String> trLeaves = new ArrayList<String>(Arrays.asList(tr.getLeaves()));
 					Set<String> trLeaves = new HashSet<String>(Arrays.asList(tr.getLeaves()));
+					boolean tokeep = true;
+					if(!trLeaves.contains(newSpeciesName))
+						tokeep = false;
 					
 					trLeaves.removeAll(stLeaves);
 					if(trLeaves.size() >= 1){
@@ -1270,7 +1280,7 @@ public class CommandLine {
 //						System.err.println("pruned2");
 					}
 //					System.err.println(tr);
-					if (minleaves == null || tr.getLeafCount() >= minleaves) {
+					if ((minleaves == null || tr.getLeafCount() >= minleaves) && tokeep) {
 						trees.add(tr);
 					} else {
 						skipped.add(l);
@@ -1305,9 +1315,15 @@ public class CommandLine {
 			throw new RuntimeException("Failed to Parse Tree number: " + l, e);
 		}
 		if (skipped.size() > 0) {
+			if(minleaves != null){
 			System.err
 					.println("Skipping the following tree(s) because they had less than "
 							+ minleaves + " leaves: \n" + skipped);
+			}
+			else{
+				System.err
+				.println("Skipping the following tree(s) because they did not contain new species" + skipped);
+			}
 		}
 	}
 

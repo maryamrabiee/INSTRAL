@@ -143,6 +143,102 @@ public class Utils {
         return (Tree)tree;
       }
 
+	public static Tree buildTreeFromClusters2(Iterable<STITreeCluster> clusters, 
+			TaxonIdentifier identifier, boolean keepclusters, Tree backboneTree, String newSpecies) {
+		
+        if ((clusters == null) || (!clusters.iterator().hasNext())) {
+          throw new RuntimeException("Empty list of clusters. The function returns a null tree.");
+        }
+    
+        //TaxonIdentifier spm = GlobalMaps.taxonNameMap.getSpeciesIdMapper().getSTTaxonIdentifier();
+        STITree tree = new STITree<Double>();
+        tree.getRoot().setData(identifier.newCluster().complementaryCluster());
+    
+        // Start from a star tree
+        for (int i = 0; i < identifier.taxonCount(); i++) {
+          tree.getRoot().createChild(identifier.getTaxonName(i)).setData(identifier.getClusterForNodeName(identifier.getTaxonName(i)));
+        }
+    
+        /**
+         *  Add each cluster to the start tree one by one
+         */
+        for (STITreeCluster tc : clusters) {
+          // Let's start with easy cases
+          if (tc.getClusterSize() <= 1 || tc.getClusterSize() == identifier.taxonCount())
+            continue;
+    
+          /**  
+           * Find the LCA of all nodes inside this cluster
+           */
+          Set<TNode> clusterLeaves = new HashSet<TNode>();
+          for (String l : tc.getClusterLeaves()) {
+            TNode node = tree.getNode(l);
+            clusterLeaves.add(node);
+          }
+    
+          SchieberVishkinLCA lcaFinder = new SchieberVishkinLCA(tree);
+          TNode lca = lcaFinder.getLCA(clusterLeaves);
+    
+          // The set of clusters that will be moved from the LCA
+          //    to become the children of this new node that we 
+          //    will (potentially) create. 
+          LinkedList<TNode> movedChildren = new LinkedList<TNode>();
+          int remainingleaves = clusterLeaves.size();
+          
+          // Go through the children of the LCA
+          for (TNode child : lca.getChildren()) {
+            STITreeCluster childCluster = (STITreeCluster) ((STINode)child).getData();
+            
+            // If the child cluster is a substet of this cluster
+            //    add it to the set of clusters that will be moved
+            //    to become the children of this cluster
+            if (tc.containsCluster(childCluster)) {
+              movedChildren.add(child);
+              remainingleaves -= childCluster.getClusterSize();
+            }
+    
+          }
+          
+          // This should only happen if our set of clusters are not compatible. 
+          // TODO: either update the documentation of the method or remove this check
+          if (movedChildren.size() == 0 || remainingleaves != 0) {
+              continue;
+          }
+    
+          // Create a new child for this cluster and adopt
+          //   the lca children that are a subset of this node
+          //   as the new node's children
+          STINode newChild = ((STINode)lca).createChild();
+          newChild.setData(tc);
+          while (!movedChildren.isEmpty()) {
+            newChild.adoptChild((TMutableNode)movedChildren.get(0));
+            movedChildren.remove(0);
+          }
+        }
+    
+        tree.setRooted(false);
+        if (!keepclusters) {
+        	for (TNode node: ((MutableTree)tree).postTraverse()) {
+        		((STINode)node).setData(null);
+        		if(node.isLeaf()){
+	        		if(((STINode)node).getName().equals(newSpecies)){
+	        			TNode sibling = node.getSiblings().get(0);
+	        	        Set<TNode> clusterLeaves = new HashSet<TNode>();
+	        	          for (TNode t : sibling.getLeaves()) {
+	        	            TNode n = backboneTree.getNode(t.getName());
+	        	            clusterLeaves.add(n);
+	        	          }
+	        	        SchieberVishkinLCA lcaFinder = new SchieberVishkinLCA((STITree)backboneTree);
+	        	        TNode lca = lcaFinder.getLCA(clusterLeaves);
+	        	        System.err.println("The branch that new species is attached: "+lca.getName());
+	        	        System.out.println(lca.getName());
+	        		}
+        		}
+        	}
+        }
+        return (Tree)tree;
+      }
+	
 	
 	/**
 	 * Compute branch support given as set of trees
