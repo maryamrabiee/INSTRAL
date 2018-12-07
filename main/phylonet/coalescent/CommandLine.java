@@ -58,7 +58,7 @@ import com.martiansoftware.jsap.stringparsers.FileStringParser;
 //import com.sun.xml.internal.xsom.impl.util.SchemaTreeTraverser;
 
 public class CommandLine {
-	protected static String _version = "5.13.4";
+	protected static String _version = "5.13.5";
 
 	protected static SimpleJSAP jsap;
 

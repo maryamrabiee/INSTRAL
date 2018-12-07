@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -230,8 +231,22 @@ public class Utils {
 	        	          }
 	        	        SchieberVishkinLCA lcaFinder = new SchieberVishkinLCA((STITree)backboneTree);
 	        	        TNode lca = lcaFinder.getLCA(clusterLeaves);
-	        	        System.err.println("The branch that new species is attached: "+lca.getName());
-	        	        System.out.println(lca.getName());
+	        	        String branchLabel = lca.getName();
+	        	        String backboneRoot = backboneTree.getRoot().getName();
+	        	        if(branchLabel.equals(backboneRoot)){
+	        	        	TNode root = backboneTree.getRoot();
+	        	        	Set<TNode> complement = new HashSet<TNode>();
+	        	        	for (TNode t : root.getLeaves()) {
+	        	        		TNode n = backboneTree.getNode(t.getName());
+	        	        		complement.add(n);
+	        	        	}
+	        	        	complement.removeAll(clusterLeaves);
+	        	        	TNode lca2 = lcaFinder.getLCA(complement);
+	        	        	if(!lca2.getName().equals(branchLabel))
+	        	        		branchLabel = lca2.getName();
+	        	        }
+	        	        System.err.println("The branch that new species is attached: " + branchLabel);
+	        	        System.out.println(branchLabel);
 	        		}
         		}
         	}

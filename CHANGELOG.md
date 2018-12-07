@@ -1,4 +1,6 @@
 - version 5.13.2:
+    - the bug with incorrect report of placement to the root is resolved
+- version 5.13.2:
     - extended logging and change in reading trees which results in decrease in running time
 - version 5.13.0:
     - Placement option (starting a new repository)
