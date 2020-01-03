@@ -13,13 +13,6 @@ Email: `mrabieeh@ucsd.edu` for questions.
 
 
 
-#### Documentations
-
-1. The rest of this README file
-- **ASTRAL [tutorial](astral-tutorial.md)**.
-- Publications below have scientific details
-
-
 ##### Publications:
 
 - The original algorithm is described in:
@@ -31,7 +24,7 @@ Email: `mrabieeh@ucsd.edu` for questions.
 
 INSTALLATION:
 -----------
-There is no installation required to run ASTRAL.
+There is no installation required to run INSTRAL.
 You simply need to download the [zip file](https://github.com/maryamrabiee/INSTRAL/archive/master.zip)
 and extract the contents to a folder of your choice. Alternatively, you can clone the [github repository](https://github.com/maryamrabiee/INSTRAL). You can run `make.sh` to build the project or simply use the jar file that is included with the repository.
 
@@ -40,21 +33,21 @@ INSTRAL is a java-based application, and should run in any environment (Windows,
 To test your installation, go to the place where you put the uncompressed INSTRAL, and run:
 
 ```
-java -Djava.library.path=. -jar __instral.jar__ -i test_data/song_primates.424.gene.tre
+java -Djava.library.path=. -jar __instral.jar__ 
 ```
 
-This should quickly finish. There are also other sample input files under `test_data/` that can be used.
+There are sample input files under `test_data/` that can be used.
 
-ASTRAL can be run from any directory. You just need to run `java -jar /path/to/astral/__instral.jar__`.
+INSTRAL can be run from any directory. You just need to run `java -jar /path/to/astral/__instral.jar__`.
 Also, you can move `__instral.jar__` to any location you like and run it from there, but note that you need
 to move the `lib` directory as well.
 
 EXECUTION:
 -----------
-ASTRAL currently has no GUI. You need to run it through the command-line. In a terminal, go the location where you have downloaded the software, and issue the following command:
+INSTRAL currently has no GUI. You need to run it through the command-line. In a terminal, go the location where you have downloaded the software, and issue the following command:
 
 ```
-  java -Djava.library.path=. -jar __astral.jar__ -C
+  java -Djava.library.path=. -jar __instral.jar__ -C
 ```
 
 This will give you a list of options available in ASTRAL.
@@ -62,7 +55,7 @@ This will give you a list of options available in ASTRAL.
 To find the species tree given a set of gene trees in a file called `in.tree`, use:
 
 ```
-java -Djava.library.path=. -jar __astral.jar__ -i in.tree -f backbone.tre --placement new_species_label -o out.tre -C
+java -Djava.library.path=. -jar __instral.jar__ -i in.tree -f backbone.tre --placement new_species_label -o out.tre -C
 ```
 
 The branch label will be outputted to the standard output. 
