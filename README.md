@@ -61,14 +61,21 @@ java -Djava.library.path=. -jar __instral.jar__ -i in.tree -f backbone.tre --pla
 The branch label will be outputted to the standard output. 
 
 ```
-java -Djava.library.path=. -jar __astral.jar__ -i in.tree -f backbone.tre --placement new_species_label -o out.tre > branch.br
+java -Djava.library.path=. -jar __instral.jar__ -i in.tree -f backbone.tre --placement new_species_label -o out.tre > branch.br
 ```
 
 To save the logs (**also recommended**), run:
 
 ```
-java -Djava.library.path=. -jar __astral.jar__ -i in.tree -f backbone.tre --placement new_species_label -o out.tre > branch.br 2>out.log
+java -Djava.library.path=. -jar __instral.jar__ -i in.tree -f backbone.tre --placement new_species_label -o out.tre > branch.br 2>out.log
 ```
+
+sample run with data provided:
+
+```
+java -Djava.library.path=. -jar __instral.jar__ -i main/test_data/1KP-genetrees.tre --placement Oryza_sativa -f main/test_data/1KP-estimated-speciestree.Oryza_sativa.pr -o out.tre 2> out.log
+```
+
 
 ###### Input: 
 * The input gene trees and backbone tree are in the Newick format
@@ -91,6 +98,13 @@ If the input gene trees have more than one species compared to backbone tree, yo
 ./multiple_placements.sh estimatedgenetrees.tre backbone.tree outdir/ final_tree.tree 
 ```
 single placements of each species can be found in the output directory.
+
+A sample run for inserting two species :
+
+```
+./multiple_placements.sh main/test_data/1KP-genetrees.tre main/test_data/1KP-estimated-speciestree.Oryza_sativa.Thuidium_delicatulum.pr outdir/ final.tre .
+```
+It will insert the two species, Oryza_sativa and Thuidium\_delicatulum  that are missing from the backbone to it. The final tree is final.tre in outdir/.
 
 ### Resolving polytomies:
 If you wanted to resolve polytomies, you can use Constrained ASTRAL and define the INSTRAL result as a constraint tree and let ASTRAL resolve it using the gene trees. The code is available [here](https://github.com/maryamrabiee/Constrained-search). For getting resolution of polytomies you can run:
